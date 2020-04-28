@@ -1,18 +1,9 @@
 from flask import Flask, jsonify, request
 from flask_restful import Api, Resource
-from data import load_data
+from recengine import recommend_movie
 
 app = Flask(__name__)
 api = Api(app)
-moviesDict, movies_table = load_data()
-
-
-def MovieId(movieName):
-    id = movies_table[movies_table['title']==movieName]['movie_id']
-    if id.count() > 0:
-        return id.values[0]
-    else:
-        return None
 
 
 class recommend(Resource):
@@ -21,15 +12,14 @@ class recommend(Resource):
 
         #Get the data
         movieName = postedData["movie_name"]
-        number = postedData["number"]
+        number = int(postedData["number"])
 
-        movieId = MovieId(movieName)
-        print(movieId)
+        movies = recommend_movie(movieName, number)
+        print(movies)
 
         retJson = {
             "status":200,
-            "movieId": int(movieId),
-            "movieName":movieName
+            "movies":movies
              }
         return jsonify(retJson)
 
