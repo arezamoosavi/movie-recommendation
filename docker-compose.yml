@@ -1,15 +1,44 @@
 version: '3'
+
+volumes:
+  mgdata:
+  static_files:
+  uploaded_files:
+
 services:
   web:
-    build: .
+    build:
+      context: . # We set this context to load the app requirements when building the image
+      dockerfile: ./dockerfiles/web/Dockerfile
     ports:
       - "5000:5000"
     volumes:
       - ./src:/src
+    depends_on:
+      - db
     links:
       - db:mongodb
     container_name: recsys_web_1
     restart: always
+    
   db:
     image: mongo:4.0.4
+    volumes:
+      - mgdata:/var/lib/mongodb/data/
     container_name: recsys_db_1
+  
+  nginx:
+    container_name: nginx
+    build:
+      context: . # We set this context to load the app requirements when building the image
+      dockerfile: ./dockerfiles/nginx/Dockerfile
+    ports:
+      - "8000:8000"
+    expose:
+      - "8000"
+    volumes:
+      # nginx needs to access static files (readonly) and uploaded files(read+write)
+      - static_files:/static_files
+      - uploaded_files:/uploaded_files
+    depends_on:
+      - web
