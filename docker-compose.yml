@@ -4,6 +4,7 @@ volumes:
   mgdata:
   static_files:
   uploaded_files:
+  redisdata:
 
 services:
   web:
@@ -16,10 +17,14 @@ services:
       - ./src:/src
     depends_on:
       - db
+      - rabbitmq
+      - redis
     links:
       - db:mongodbhost
+      - redis
+      - rabbitmq
     container_name: recsys_web_1
-    restart: always
+    restart: on-failure
     
   db:
     image: mongo:4.0.4
@@ -35,10 +40,10 @@ services:
     volumes:
       - mgdata:/var/lib/mongodb/data/
     container_name: recsys_db_1
-    restart: always
+    restart: on-failure
   
   nginx:
-    container_name: nginx
+    container_name: nginx:1.18.0-alpine
     build:
       context: .
       dockerfile: ./dockerfiles/nginx/Dockerfile
@@ -47,9 +52,49 @@ services:
     expose:
       - "8000"
     volumes:
-      # nginx needs to access static files (readonly) and uploaded files(read+write)
       - static_files:/static_files
       - uploaded_files:/uploaded_files
     depends_on:
       - web
-    restart: always
+    container_name: recsys_nginx_1
+    restart: on-failure
+
+  rabbitmq:
+    image: rabbitmq:3.8.3-alpine
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=mypass
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    hostname: rabbitmq
+    container_name: recsys_rmq_1
+    restart: on-failure
+
+  redis:
+    image: redis:5.0.9-alpine
+    ports:
+      - "6379:6379"
+    expose:
+      - "6379"
+    volumes:
+      - redisdata:/data
+    hostname: redis
+    container_name: recsys_redis_1
+    restart: on-failure
+
+  celery_worker:
+    build:
+      context: .
+      dockerfile: ./dockerfiles/web/Dockerfile
+    command: celery -A worker worker --loglevel=info
+    links:
+      - rabbitmq
+      - redis
+    depends_on:
+      - rabbitmq
+      - redis
+    volumes:
+    - ./src:/src
+    container_name: recsys_celery_1
+    restart: on-failure

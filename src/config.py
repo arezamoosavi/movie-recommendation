@@ -8,3 +8,6 @@ MONGODB_HOST='dbhost'
 MONGODB_USER='root'
 MONGODB_PASS='rootpassword'
 MONGODB_DB='admin'
+
+CELERY_BROKER_URL = "amqp://rabbitmq"
+CELERY_RESULT_BACKEND = 'redis://localhost:6379/0'

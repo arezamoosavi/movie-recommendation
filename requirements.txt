@@ -1,10 +1,11 @@
 Flask==1.1.2
 Flask-RESTful==0.3.8
+Flask-Admin
+Flask-Login
 pymongo==3.10.1
 flask-mongoengine==0.9.5
-numpy==1.16.0
-pandas==1.0.3
+celery[redis]
+amqp
+redis
 celery==4.4.2
 gunicorn==20.0.4
-daphne==2.5.0
-
