@@ -20,4 +20,4 @@ WORKDIR /src
 
 EXPOSE 5000
 
-CMD gunicorn -w 4 app:app -b :5000
+CMD gunicorn -w 4 application:app -b :5000

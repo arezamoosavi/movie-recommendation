@@ -44,4 +44,4 @@ def recommend_movie(movieName, number):
         neighbors = getNeighbors(id, number)
         return [movieDict[neighbor][0] for neighbor in neighbors ]
     else:
-        return "No suggestion!"
+        return None

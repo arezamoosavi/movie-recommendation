@@ -13,5 +13,5 @@ docker-compose up --build
 
 ```bash
 curl -H "Content-Type: application/json" -X POST -d 
-'{"movie_name":"Once Upon a Time in America (1984)","number":6}' http://0.0.0.0:5000/recommend
+'{"movie_name":"Once Upon a Time in America (1984)","number":6}' http://0.0.0.0:8000/recommend
 ```

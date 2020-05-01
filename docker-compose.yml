@@ -8,7 +8,7 @@ volumes:
 services:
   web:
     build:
-      context: . # We set this context to load the app requirements when building the image
+      context: .
       dockerfile: ./dockerfiles/web/Dockerfile
     ports:
       - "5000:5000"
@@ -17,20 +17,30 @@ services:
     depends_on:
       - db
     links:
-      - db:mongodb
+      - db:mongodbhost
     container_name: recsys_web_1
     restart: always
     
   db:
     image: mongo:4.0.4
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=rootpassword
+    ports:
+      - "27017:27017"
+    expose:
+      - "27017"
+    # command: mongod --auth --bind_ip all
+    # command: mongod --port 27017 --bind_ip 0.0.0.0
     volumes:
       - mgdata:/var/lib/mongodb/data/
     container_name: recsys_db_1
+    restart: always
   
   nginx:
     container_name: nginx
     build:
-      context: . # We set this context to load the app requirements when building the image
+      context: .
       dockerfile: ./dockerfiles/nginx/Dockerfile
     ports:
       - "8000:8000"
@@ -42,3 +52,4 @@ services:
       - uploaded_files:/uploaded_files
     depends_on:
       - web
+    restart: always
