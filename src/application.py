@@ -6,6 +6,7 @@ from flask_admin.contrib.mongoengine import ModelView
 from resources import Recommend
 from models import db, SearchMovie
 import config
+import logging
 
 app = Flask(__name__)
 api = Api(app)
@@ -32,7 +33,7 @@ admin.add_view(ModelView(SearchMovie))
 
 #endpoints
 api.add_resource(Recommend, '/recommend')
-
+# app.logger.setLevel(logging.INFO)
 if __name__=="__main__":
     app.run(host=config.HOST,
             port=config.HOST,
