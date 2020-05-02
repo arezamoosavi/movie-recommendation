@@ -20,8 +20,8 @@ services:
     links:
       - db:mongodbhost
       - celery
-      - redis
       - rabbitmq
+      - redis
     command: gunicorn -w 2 application:app -b :5000 --access-logfile '-'
     container_name: recsys_web_1
     restart: on-failure
@@ -61,11 +61,10 @@ services:
 
   rabbitmq:
     image: rabbitmq:3.8.3-management
-    # environment:
-    #   - RABBITMQ_DEFAULT_USER=admin
-    #   - RABBITMQ_DEFAULT_PASS=mypass
+    environment:
+      - RABBITMQ_DEFAULT_USER=admin
+      - RABBITMQ_DEFAULT_PASS=mypass
     ports:
-      - "15672:15672"
       - "5672:5672"
     hostname: rabbitmq
     container_name: recsys_rmq_1
@@ -86,14 +85,14 @@ services:
     build:
       context: .
       dockerfile: ./dockerfiles/web/Dockerfile
-    command: celery worker -A cworker --loglevel=DEBUG
+    command: celery worker -A cworker --loglevel=INFO
     volumes:
       - ./src:/src
     depends_on:
-      - redis
       - rabbitmq
+      - redis
     links:
-      - redis
       - rabbitmq
+      - redis
     container_name: recsys_celery_1
     restart: on-failure
