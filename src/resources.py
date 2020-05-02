@@ -3,7 +3,7 @@ from logging.handlers import RotatingFileHandler
 from flask_restful import Resource
 from flask import jsonify, request
 from recengine import recommend_movie
-from tasks import async_recommend
+from tasks import addasync
 from models import SearchMovie
 
 #loging
@@ -18,14 +18,16 @@ class Recommend(Resource):
 
         #Get the data
         try:
-            movieName = postedData["movie_name"]
+            movieName = str(postedData["movie_name"])
             number = int(postedData["number"])
         except Exception as e:
                 logging.error('Error! {}'.format(e))
                 return "Data not found", 400
 
-        # movies = recommend_movie(movieName, number)
-        movies = async_recommend.delay(movieName, number)
+        movies = recommend_movie(movieName, number)
+        print(addasync.delay(2,2).get(timeout=5),'sss\n'*5)
+        # movies = async_recommend.delay(movieName, number).get(timeout=5)
+                                            
 
         if movies:
             rec_success = True

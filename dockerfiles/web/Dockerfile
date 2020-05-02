@@ -1,4 +1,5 @@
 FROM python:3.7.6-alpine
+# FROM python:3.7-slim-stretch
 # FROM python:3.7.6-buster
 
 ENV PYTHONDONTWRITEBYTECODE 1
@@ -19,4 +20,4 @@ RUN mkdir -p /src
 
 WORKDIR /src
 
-CMD gunicorn -w 4 application:app -b :5000 --access-logfile '-'
+# CMD gunicorn -w 4 application:app -b :5000 --access-logfile '-'
