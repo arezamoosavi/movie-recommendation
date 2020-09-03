@@ -32,3 +32,7 @@ http://0.0.0.0:8000/admin
 ## Result
 
 ![alt text](https://github.com/arezamoosavi/movie-recommendation/blob/master/resultpanel.jpeg?raw=true)
+
+## Meduim
+### [part1](https://medium.com/@sdamoosavi/movie-recommender-web-service-ml-ce6d11d1d13f)
+### [part2](https://medium.com/@sdamoosavi/movie-recommender-web-service-flask-and-celery-bc792e254a4a)
